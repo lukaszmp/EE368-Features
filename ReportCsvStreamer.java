@@ -83,6 +83,7 @@ public class ReportCsvStreamer implements ReportDataStreamHandler {
     }
 
     public void pointData(ReportDataValue rdv) {
+        //store all point data within storeData
         storeData[rowNum][numSensors] = lastUsedSensor;
 
         storeData[rowNum][numSensors + 1] = dtf.print(new DateTime(rdv.getTime()));
