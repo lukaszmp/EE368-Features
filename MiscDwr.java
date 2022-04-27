@@ -325,8 +325,10 @@ public class MiscDwr extends BaseDwr {
                         try {
                             String dataVal = newState.getValue();
                             int findDecimal = dataVal.indexOf('.');
-                            dataVal = dataVal.substring(0, findDecimal + 3);
-                            newState.setValue(dataVal);
+                            if(findDecimal != -1){
+                                dataVal = dataVal.substring(0, findDecimal + 3);
+                                newState.setValue(dataVal);
+                            }
                         }
                         catch(Exception e){
                             
