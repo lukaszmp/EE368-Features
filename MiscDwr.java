@@ -331,7 +331,7 @@ public class MiscDwr extends BaseDwr {
                             }
                         }
                         catch(Exception e){
-                            
+                            //catch exceptions to prevent crash
                         }
                         //End of Team's Solution.
                         WatchListState oldState = state.getWatchListState(newState.getId());
