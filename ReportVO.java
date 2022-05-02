@@ -85,6 +85,17 @@ public class ReportVO implements Serializable {
     private List<RecipientListEntryBean> recipients = new ArrayList<RecipientListEntryBean>();
     private boolean includeData = true;
     private boolean zipData = false;
+    
+    //Data added for feature 7 (FR7)
+    
+    private String title;
+    private String xAxisLabel;
+    private String yAxisLabel;
+    private int yRefLine;
+    
+    //End data added for FR7
+    
+    //TODO: add in serilization of new data
 
     public ReportVO() {
         // Default the specific date fields.
@@ -102,6 +113,68 @@ public class ReportVO implements Serializable {
         fromHour = dt.getHourOfDay();
         fromMinute = dt.getMinuteOfHour();
     }
+    
+    //Non default construtor added for FR7
+    
+    public ReportVO(String inTitle, String inXAxisLabel, String inYAxisLabel, int inYRefLine){
+    	title = inTitle;
+    	xAxisLabel = inXAxisLabel;
+    	yAxisLabel = inYAxisLabel;
+    	yRefLine = inYRefLine;
+    	
+    	// Default the specific date fields.
+        DateTime dt = DateUtils.truncateDateTime(new DateTime(), Common.TimePeriods.DAYS);
+        toYear = dt.getYear();
+        toMonth = dt.getMonthOfYear();
+        toDay = dt.getDayOfMonth();
+        toHour = dt.getHourOfDay();
+        toMinute = dt.getMinuteOfHour();
+
+        dt = DateUtils.minus(dt, Common.TimePeriods.DAYS, 1);
+        fromYear = dt.getYear();
+        fromMonth = dt.getMonthOfYear();
+        fromDay = dt.getDayOfMonth();
+        fromHour = dt.getHourOfDay();
+        fromMinute = dt.getMinuteOfHour();
+    }
+    
+    //End Non default constructor added for FR7
+    
+    //Getters and Setters added for FR7
+    
+    public String getChartTitle(){
+    	return this.title;
+    }
+    
+    public String getXAxisLabel(){
+    	return this.xAxisLabel;
+    }
+    
+    public String getYAxisLabel(){
+    	return this.yAxisLabel;
+    }
+    
+    public int getYReferenceLine(){
+    	return this.yRefLine;
+    }
+    
+    public void setTitle(String inTitle){
+    	this.title = inTitle;
+    }
+    
+    public void setXAxisLabel(String inXAxisLabel){
+    	this.xAxisLabel = inXAxisLabel;
+    }
+    
+    public void setYAxisLabel(String inYAxisLabel){
+    	this.yAxisLabel = inYAxisLabel;
+    }
+    
+    public void setYRefLine(int inYRefLine){
+    	this.yRefLine = inYRefLine;
+    }
+    
+    //End getters and setters added for FR7
 
     public int getId() {
         return id;
