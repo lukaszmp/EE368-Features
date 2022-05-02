@@ -167,9 +167,21 @@
                         return "<input type='checkbox'"+ (data.consolidatedChart ? " checked='checked'" : "") +
                                 " onclick='updatePointConsolidatedChart("+ data.pointId +", this.checked)'/>";
                     },
-                    function(data) { 
-                            return "<img src='images/bullet_delete.png' class='ptr' "+
-                                    "onclick='removeFromReportPointsArray("+ data.pointId +")'/>";
+                    function(data) {
+                    	    return "<input type='text' value='TITLE1' "+
+                    	            "onblur='updatePointColour("+ data.pointId +", this.value)'/>";
+                    },
+                    function(data) {
+                    	    return "<input type='text' value='XAXIS1' "+
+                    	            "onblur='updatePointColour("+ data.pointId +", this.value)'/>";
+                    },
+                    function(data) {
+                    	    return "<input type='text' value='XAXIS2' "+
+                    	            "onblur='updatePointColour("+ data.pointId +", this.value)'/>";
+                    },
+                    function(data) {
+                    	    return "<input type='text' value='0' "+
+                    	            "onblur='updatePointColour("+ data.pointId +", this.value)'/>";
                     }
                 ],
                 {
@@ -592,6 +604,10 @@
                       <td><fmt:message key="reports.dataType"/></td>
                       <td><fmt:message key="reports.colour"/></td>
                       <td><fmt:message key="reports.consolidatedChart"/></td>
+                      <td><fmt:message key="Title"/></td>
+                      <td><fmt:message key="X axis label"/></td>
+                      <td><fmt:message key="Y axis label"/></td>
+                      <td><fmt:message key="Y reference line"/></td>
                       <td></td>
                     </tr>
                   </tbody>
