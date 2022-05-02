@@ -34,6 +34,15 @@ public class ReportPointInfo {
     private String colour;
     private boolean consolidatedChart;
 
+    // Team added variables:
+    private boolean lineChart;  //not sure wether to check radio buttons w/ bools?
+    private boolean scatterChart;
+    private String chartTitle;
+    private String XAxisLabel;
+    private String YAxisLabel;
+    private String YReferenceLine;
+    //each variable will most likely need getter and setter functions
+
     public String getExtendedName() {
         return deviceName + " - " + pointName;
     }
@@ -101,4 +110,31 @@ public class ReportPointInfo {
     public void setConsolidatedChart(boolean consolidatedChart) {
         this.consolidatedChart = consolidatedChart;
     }
+
+    //Team added getter and setter functions:
+
+    public boolean isLineChart() {return lineChart;}
+
+    public void setLineChart(boolean lineChart) {this.lineChart = lineChart;}
+
+    public boolean isScatterChart() {return scatterChart;}
+
+    public void setScatterChart(boolean scatterChart) {this.scatterChart = scatterChart;}
+
+    public String getXAxisLabel() {return XAxisLabel;}
+
+    public void setXAxisLabel(String Xlabel) {this.XAxisLabel = Xlabel;}
+
+    public String getYAxisLabel() {return YAxisLabel;}
+
+    public void setYAxisLabel(String Ylabel) {this.YAxisLabel = Ylabel;}
+
+    public String getChartTitle() {return chartTitle;}
+
+    public void setChartTitle(String title) {this.chartTitle = title;}
+
+    public String getYReferenceLine() {return YReferenceLine;}
+
+    public void setYReferenceLine(String line) {this.YReferenceLine = line;}
+
 }
