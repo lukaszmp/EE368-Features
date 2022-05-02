@@ -20,6 +20,7 @@ package com.serotonin.mango.vo.report;
 
 import java.io.PrintWriter;
 import java.util.ResourceBundle;
+import java.util.Arrays;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -37,43 +38,75 @@ public class ReportCsvStreamer implements ReportDataStreamHandler {
 
     // Working fields
     private TextRenderer textRenderer;
-    private final String[] data = new String[5];
     private final DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyy/MM/dd HH:mm:ss");
-    private final CsvWriter csvWriter = new CsvWriter();
+    private CsvWriter csvWriter = new CsvWriter();
+    //team created variables:
+    private String lastUsedSensor = null;
+    private int numSensors = 0;
+    private final ResourceBundle bundle;
+    private String storeData[][] = new String[20000][60]; //pre-set to hold 20000 lines of data for 12 sensors
+    private int rowNum = 1; // 0 index is for headers
+    private int totalRows = 1;
 
     public ReportCsvStreamer(PrintWriter out, ResourceBundle bundle) {
+        this.bundle = bundle;
         this.out = out;
-
+        
         // Write the headers.
-        data[0] = I18NUtils.getMessage(bundle, "reports.pointName");
-        data[1] = I18NUtils.getMessage(bundle, "common.time");
-        data[2] = I18NUtils.getMessage(bundle, "common.value");
-        data[3] = I18NUtils.getMessage(bundle, "reports.rendered");
-        data[4] = I18NUtils.getMessage(bundle, "common.annotation");
-        out.write(csvWriter.encodeRow(data));
+        //save to double array
+        storeData[0][0] = I18NUtils.getMessage(bundle, "reports.pointName");
+        storeData[0][1] = I18NUtils.getMessage(bundle, "common.time");
+        storeData[0][2] = I18NUtils.getMessage(bundle, "common.value");
+        storeData[0][3] = I18NUtils.getMessage(bundle, "reports.rendered");
+        storeData[0][4] = I18NUtils.getMessage(bundle, "common.annotation");
     }
 
     public void startPoint(ReportPointInfo pointInfo) {
-        data[0] = pointInfo.getExtendedName();
+        String name = pointInfo.getExtendedName();
+        if (lastUsedSensor == null){
+            lastUsedSensor = name;
+        }
+        if (name != lastUsedSensor && name != null && name != "") { // if next datapoint is using a different sensor:
+            numSensors += 5;
+            rowNum = 1;
+            lastUsedSensor = name;
+            //write headers to new columns
+            //save to storeData
+            storeData[0][numSensors + 0] = I18NUtils.getMessage(bundle, "reports.pointName");
+            storeData[0][numSensors + 1] = I18NUtils.getMessage(bundle, "common.time");
+            storeData[0][numSensors + 2] = I18NUtils.getMessage(bundle, "common.value");
+            storeData[0][numSensors + 3] = I18NUtils.getMessage(bundle, "reports.rendered");
+            storeData[0][numSensors + 4] = I18NUtils.getMessage(bundle, "common.annotation");
+        }
+        storeData[rowNum][numSensors] = name;
         textRenderer = pointInfo.getTextRenderer();
     }
 
     public void pointData(ReportDataValue rdv) {
-        data[1] = dtf.print(new DateTime(rdv.getTime()));
+        //store all point data within storeData
+        storeData[rowNum][numSensors] = lastUsedSensor;
 
-        if (rdv.getValue() == null)
-            data[2] = data[3] = null;
-        else {
-            data[2] = rdv.getValue().toString();
-            data[3] = textRenderer.getText(rdv.getValue(), TextRenderer.HINT_FULL);
+        storeData[rowNum][numSensors + 1] = dtf.print(new DateTime(rdv.getTime()));
+
+        if (rdv.getValue() == null) {
+            storeData[rowNum][numSensors + 2] = storeData[rowNum][numSensors + 3] = null;
         }
-
-        data[4] = rdv.getAnnotation();
-
-        out.write(csvWriter.encodeRow(data));
+        else {
+            storeData[rowNum][numSensors + 2] = rdv.getValue().toString();
+            storeData[rowNum][numSensors + 3] = textRenderer.getText(rdv.getValue(), TextRenderer.HINT_FULL);
+        }
+        storeData[rowNum][numSensors + 4] = rdv.getAnnotation();
+        rowNum++;
+        if(rowNum > totalRows){
+            totalRows = rowNum;
+        }
     }
 
     public void done() {
+        //run through all data and print to excel one row at a time
+        for (int i = 0; i <= totalRows; i++){ //scroll through each row of data
+            out.write(csvWriter.encodeRow(storeData[i])); //format and write entire row of data
+        }
         out.flush();
         out.close();
     }
