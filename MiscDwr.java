@@ -321,6 +321,19 @@ public class MiscDwr extends BaseDwr {
                     List<WatchListState> differentStates = new ArrayList<WatchListState>();
 
                     for (WatchListState newState : newStates) {
+                        //Team Solution for Data Trunctation Here:
+                        try {
+                            String dataVal = newState.getValue();
+                            int findDecimal = dataVal.indexOf('.');
+                            if(findDecimal != -1){
+                                dataVal = dataVal.substring(0, findDecimal + 3);
+                                newState.setValue(dataVal);
+                            }
+                        }
+                        catch(Exception e){
+                            //catch exceptions to prevent crash
+                        }
+                        //End of Team's Solution.
                         WatchListState oldState = state.getWatchListState(newState.getId());
                         if (oldState == null)
                             differentStates.add(newState);
@@ -476,6 +489,19 @@ public class MiscDwr extends BaseDwr {
         }
     }
 
+    public double truncateDouble(double number, int numDigits) {
+        double result = number;
+        String arg = "" + number;
+        int idx = arg.indexOf('.');
+        if (idx != -1) {
+            if (arg.length() > idx + numDigits) {
+                arg = arg.substring(0, idx + numDigits + 1);
+                result = Double.parseDouble(arg);
+            }
+        }
+        return result;
+    }
+
     private LongPollData getLongPollData(int pollSessionId, boolean refreshState) {
         List<LongPollData> dataList = getLongPollData();
 
@@ -485,7 +511,6 @@ public class MiscDwr extends BaseDwr {
                 data = getDataFromList(dataList, pollSessionId);
                 if (data == null) {
                     data = new LongPollData(pollSessionId);
-                    refreshState = true;
                     dataList.add(data);
                 }
             }
